@@ -1,0 +1,24 @@
+# Ignore node_modules and other dependencies
+node_modules/
+
+# Ignore build and distribution folders
+dist/
+build/
+
+# Ignore test output directories
+coverage/
+
+# Ignore config and logs
+*.log
+*.env
+*.json
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore all minified files
+*.min.js
+
+# Ignore documentation files (if any)
+docs/
