@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import logger from './utils/logger.js';
 
 // internal imports
-import { ApiError } from './utils/ApiError.js';
+import ApiError from './utils/ApiError.js';
 import { API_V } from './utils/constants.js';
 
 // app initialization
@@ -41,7 +41,7 @@ app.use(API_V + '/auth', authRouter);
 
 // error handling middleware
 app.use((err, req, res, next) => {
-    console.log(err);
+    console.error(err);
 
     if (err instanceof ApiError) {
         return res.status(err.statusCode).json({
