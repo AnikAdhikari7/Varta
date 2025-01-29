@@ -1,17 +1,27 @@
 // external imports
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express from 'express';
 import morgan from 'morgan';
 import logger from './utils/logger.js';
 
 // internal imports
 import ApiError from './utils/ApiError.js';
-import { API_V } from './utils/constants.js';
+import { API_V, MAX_LIMIT } from './utils/constants.js';
 
 // app initialization
 const app = express();
 
 // middlewares
-app.use(express.json());
+app.use(
+    cors({
+        origin: process.env.CORS_ORIGIN,
+        credentials: true,
+    })
+);
+app.use(express.json({ limit: MAX_LIMIT }));
+app.use(express.urlencoded({ extended: true, limit: MAX_LIMIT }));
+app.use(cookieParser());
 
 // logging with morgan
 (() => {

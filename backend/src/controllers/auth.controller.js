@@ -2,6 +2,7 @@
 import bcrypt from 'bcryptjs';
 
 // internal imports
+import cloudinary from '../config/cloudinary.js';
 import User from '../models/user.model.js';
 import ApiError from '../utils/ApiError.js';
 import ApiResponse from '../utils/ApiResponse.js';
@@ -84,32 +85,29 @@ export const login = asyncHandler(async (req, res) => {
 
     try {
         // check if user exists
-        const existingUser = await User.findOne({ email }).lean();
+        const user = await User.findOne({ email }).lean();
 
-        if (!existingUser) {
+        if (!user) {
             throw new ApiError(400, 'Invalid credentials');
         }
 
         // check if password is correct
-        const isPasswordCorrect = await bcrypt.compare(
-            password,
-            existingUser.password
-        );
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
         if (!isPasswordCorrect) {
             throw new ApiError(400, 'Invalid credentials');
         }
 
         // generate jwt token and set cookie
-        generateToken(existingUser._id, res);
+        generateToken(user._id, res);
 
         // remove password from user object
-        delete existingUser.password;
+        delete user.password;
 
         // send response
         return res
             .status(200)
-            .json(new ApiResponse(200, existingUser, 'Logged in successfully'));
+            .json(new ApiResponse(200, user, 'Logged in successfully'));
     } catch (err) {
         throw new ApiError(
             err.statusCode || 500,
@@ -126,10 +124,74 @@ export const logout = asyncHandler(async (req, res) => {
             sameSite: 'strict',
             secure: process.env.NODE_ENV === 'production',
         });
-        
+
         return res
             .status(200)
             .json(new ApiResponse(200, null, 'Logged out successfully'));
+    } catch (err) {
+        throw new ApiError(
+            err.statusCode || 500,
+            err.message || 'Server Error'
+        );
+    }
+});
+
+// update avatar controller
+export const updateAvatar = asyncHandler(async (req, res) => {
+    try {
+        // get user from request object
+        const { avatar } = req.body;
+
+        if (!avatar) {
+            throw new ApiError(400, 'Avatar is required');
+        }
+
+        // get the user from request object
+        const userId = req.user.userId;
+
+        // upload avatar to cloudinary
+        const uploadedAvatar = await cloudinary.uploader.upload(avatar, {
+            folder: 'users/avatars',
+            width: 150,
+            crop: 'scale',
+        });
+
+        if (!uploadedAvatar) {
+            throw new ApiError(500, 'Avatar could not be uploaded');
+        }
+
+        // update user avatar
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { avatar: uploadedAvatar.secure_url },
+            { new: true }
+        ).select('-password');
+
+        // check if user updated
+        if (!updatedUser) {
+            throw new ApiError(500, 'Avatar could not be updated');
+        }
+
+        // send response
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(200, updatedUser, 'Avatar updated successfully')
+            );
+    } catch (err) {
+        throw new ApiError(
+            err.statusCode || 500,
+            err.message || 'Server Error'
+        );
+    }
+});
+
+// get user profile controller
+export const getUser = asyncHandler(async (req, res) => {
+    try {
+        return res
+            .status(200)
+            .json(new ApiResponse(200, req.user, 'User details'));
     } catch (err) {
         throw new ApiError(
             err.statusCode || 500,
