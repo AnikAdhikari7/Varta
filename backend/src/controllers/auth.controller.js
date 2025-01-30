@@ -147,7 +147,7 @@ export const updateAvatar = asyncHandler(async (req, res) => {
         }
 
         // get the user from request object
-        const userId = req.user.userId;
+        const userId = req.user._id;
 
         // upload avatar to cloudinary
         const uploadedAvatar = await cloudinary.uploader.upload(avatar, {

@@ -45,9 +45,11 @@ app.use(cookieParser());
 
 // routes import
 import authRouter from './routes/auth.route.js';
+import messageRouter from './routes/message.route.js';
 
 // routes declaration
 app.use(API_V + '/auth', authRouter);
+app.use(API_V + '/message', messageRouter)
 
 // error handling middleware
 app.use((err, req, res, next) => {

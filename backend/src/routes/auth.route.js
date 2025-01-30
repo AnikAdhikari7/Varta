@@ -1,5 +1,7 @@
 // external imports
 import { Router } from 'express';
+
+// internal imports
 import {
     getUser,
     login,
