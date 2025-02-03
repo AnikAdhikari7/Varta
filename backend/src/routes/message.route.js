@@ -5,6 +5,7 @@ import { Router } from 'express';
 import {
     getMessages,
     getUsersForSidebar,
+    sendMessage,
 } from '../controllers/message.controller.js';
 import verifyToken from '../middlewares/auth.middleware.js';
 
