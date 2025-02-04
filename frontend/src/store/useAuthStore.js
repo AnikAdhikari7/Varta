@@ -14,18 +14,52 @@ const useAuthStore = create((set) => ({
     checkAuth: async () => {
         try {
             const res = await axiosInstance.get('/auth/user');
+            const data = res.data;
 
-            if (res.data.statusCode === 200) {
-                set({ authUser: res.data.data });
+            if (data.statusCode === 200 && data.success) {
+                set({ authUser: data.data });
             } else {
                 set({ authUser: null });
+                console.error(`Error checking auth: ${data.message}`);
             }
         } catch (err) {
             set({ authUser: null });
-            console.log(`Error checking auth: ${err.message} : ${err.response.data.message}`);
-            console.log(err);
+            console.error(`Error checking auth: ${err.message}`);
+            if (
+                err.response &&
+                err.response.data &&
+                err.response.data.message
+            ) {
+                console.error(`API Error: ${err.response.data.message}`);
+            }
         } finally {
             set({ isCheckingAuth: false });
+        }
+    },
+
+    signup: async (formData) => {
+        set({ isSigningUp: true });
+
+        try {
+            const res = await axiosInstance.post('/auth/signup', formData);
+            const data = res.data;
+
+            if (data.statusCode === 201 && data.success) {
+                set({ authUser: data.data });
+            } else {
+                console.error(`Error signing up: ${data.message}`);
+            }
+        } catch (err) {
+            console.error(`Error signing up: ${err.message}`);
+            if (
+                err.response &&
+                err.response.data &&
+                err.response.data.message
+            ) {
+                console.error(`API Error: ${err.response.data.message}`);
+            }
+        } finally {
+            set({ isSigningUp: false });
         }
     },
 }));
