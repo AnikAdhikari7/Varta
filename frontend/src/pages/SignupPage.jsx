@@ -1,12 +1,12 @@
 // external imports
 import {
-  Eye,
-  EyeOff,
-  Loader2,
-  Lock,
-  Mail,
-  MessageSquare,
-  User,
+    Eye,
+    EyeOff,
+    Loader2,
+    Lock,
+    Mail,
+    MessageSquare,
+    User,
 } from 'lucide-react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -28,16 +28,26 @@ function SignupPage() {
 
     // validate form data
     const validateFormData = () => {
-        console.log(formData.fullName);
-
-        if (!formData.fullName.trim())
-            return toast.error('Full name is required');
-        if (!formData.email.trim()) return toast.error('Email is required');
-        if (!/\S+@\S+\.\S+/.test(formData.email))
-            return toast.error('Invalid email format');
-        if (!formData.password) return toast.error('Password is required');
-        if (formData.password.length < 6)
-            return toast.error('Password must be at least 6 characters');
+        if (!formData.fullName.trim()) {
+            toast.error('Full name is required');
+            return false;
+        }
+        if (!formData.email.trim()) {
+            toast.error('Email is required');
+            return false;
+        }
+        if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            toast.error('Invalid email format');
+            return false;
+        }
+        if (!formData.password) {
+            toast.error('Password is required');
+            return false;
+        }
+        if (formData.password.length < 6) {
+            toast.error('Password must be at least 6 characters');
+            return false;
+        }
 
         return true;
     };
@@ -46,9 +56,7 @@ function SignupPage() {
     const handleFormSubmit = (e) => {
         e.preventDefault();
 
-        const success = validateFormData();
-
-        if (success === true) signup(formData);
+        if (validateFormData()) signup(formData)
     };
     return (
         <div className="min-h-screen grid lg:grid-cols-2">
