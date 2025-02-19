@@ -10,7 +10,7 @@ const useAuthStore = create((set) => ({
     isCheckingAuth: true,
     isSigningUp: false,
     isLoggingIn: false,
-    isUpdatingProfile: false,
+    isUpdatingAvatar: false,
 
     // check auth
     checkAuth: async () => {
@@ -117,6 +117,36 @@ const useAuthStore = create((set) => ({
             ) {
                 console.error(`API Error: ${err.response.data.message}`);
             }
+        }
+    },
+
+    // update avatar
+    updateAvatar: async (avatar) => {
+        set({ isUpdatingAvatar: true });
+        // toast.loading('Updating avatar...', { duration: 3000 });
+
+        try {
+            const res = await axiosInstance.put('/auth/update-avatar', {
+                avatar,
+            });
+            const data = res.data;
+
+            if (data.statusCode === 200 && data.success) {
+                set({ authUser: data.data });
+                toast.success('Avatar updated successfully');
+            }
+        } catch (err) {
+            console.error(`Error updating avatar: ${err.message}`);
+            toast.error('Error updating avatar');
+            if (
+                err.response &&
+                err.response.data &&
+                err.response.data.message
+            ) {
+                console.error(`API Error: ${err.response.data.message}`);
+            }
+        } finally {
+            set({ isUpdatingAvatar: false });
         }
     },
 }));
