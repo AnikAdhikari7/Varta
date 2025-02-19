@@ -137,7 +137,11 @@ const useAuthStore = create((set) => ({
             }
         } catch (err) {
             console.error(`Error updating avatar: ${err.message}`);
-            toast.error('Error updating avatar');
+            if (err.status === 413) {
+                toast.error('Please upload an image less than 500KB');
+            } else {
+                toast.error('Error updating avatar');
+            }
             if (
                 err.response &&
                 err.response.data &&

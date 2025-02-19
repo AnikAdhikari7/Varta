@@ -55,18 +55,18 @@ app.use(API_V + '/message', messageRouter)
 app.use((err, req, res, next) => {
     console.error(err);
 
-    if (err instanceof ApiError) {
+    if (err instanceof ApiError || err.type === 'entity.too.large') {
         return res.status(err.statusCode).json({
             statusCode: err.statusCode,
-            success: err.success,
+            success: err.success || false,
             message: err.message,
             errors: err.errors,
             // stack: err.stack
         });
     }
 
-    console.error(err); // Log the error
     res.status(500).json({
+        statusCode: 500,
         success: false,
         message: 'An unexpected error occurred',
     });

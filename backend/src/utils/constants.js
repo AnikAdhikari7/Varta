@@ -1,7 +1,7 @@
 const DB_NAME = 'varta';
 
 // max limit of express req
-const MAX_LIMIT = '16kb';
+const MAX_LIMIT = '500KB';
 
 // api version route
 const API_V = '/api/v1';

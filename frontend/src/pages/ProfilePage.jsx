@@ -3,7 +3,7 @@ import { Camera, Mail, User } from 'lucide-react';
 import { useState } from 'react';
 
 // internal imports
-import { useAuthStore } from '../store/useAuthStore';
+import useAuthStore from '../store/useAuthStore';
 
 function ProfilePage() {
     const { authUser, isUpdatingAvatar, updateAvatar } = useAuthStore();
@@ -18,7 +18,7 @@ function ProfilePage() {
         reader.onload = async () => {
             const base64Img = reader.result;
             setSelectedImg(base64Img);
-            await updateAvatar({ avatar: base64Img });
+            await updateAvatar(base64Img);
         };
     };
 

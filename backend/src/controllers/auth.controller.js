@@ -141,6 +141,7 @@ export const updateAvatar = asyncHandler(async (req, res) => {
     try {
         // get user from request object
         const { avatar } = req.body;
+        
 
         if (!avatar) {
             throw new ApiError(400, 'Avatar is required');
@@ -151,8 +152,8 @@ export const updateAvatar = asyncHandler(async (req, res) => {
 
         // upload avatar to cloudinary
         const uploadedAvatar = await cloudinary.uploader.upload(avatar, {
-            folder: 'users/avatars',
-            width: 150,
+            folder: 'varta/avatars',
+            width: 500,
             crop: 'scale',
         });
 
