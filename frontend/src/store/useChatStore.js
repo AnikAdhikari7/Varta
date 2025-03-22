@@ -5,12 +5,16 @@ import { create } from 'zustand';
 // internal imports
 import axiosInstance from '../utils/axios';
 
-const useChatStore = create((set) => ({
+const useChatStore = create((set, get) => ({
     messages: [],
     users: [],
     selectedUser: null,
     isUserLoading: false,
     isMessagesLoading: false,
+
+    setSelectedUser: (selectedUser) => {
+        set({ selectedUser });
+    },
 
     getUsers: async () => {
         set({ isUserLoading: true });
@@ -54,8 +58,30 @@ const useChatStore = create((set) => ({
                 toast.error('Error fetching messages');
             }
         } finally {
-            set({ isMessagesLoading: false})
+            set({ isMessagesLoading: false });
         }
+    },
+
+    sendMessage: async (messageData) => {
+        const { selectedUser, messages } = get();
+
+        try {
+            const res = await axiosInstance.post(`/message/send/${selectedUser._id}`, messageData);
+            const data = res.data;
+
+            if (data.statusCode === 200 && data.success) {
+                set({ messages: [...messages, data.data] });
+            }
+        } catch (err) {
+            console.error(`Error sending message: ${err.message}`);
+            if (err.response?.data?.message) {
+                console.error(`API Error: ${err.response.data.message}`);
+                toast.error(err.response.data.message);
+            } else {
+                toast.error('Error sending message');
+            }
+        }
+
     }
 }));
 
