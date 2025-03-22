@@ -12,7 +12,7 @@ export const getUsersForSidebar = asyncHandler(async (req, res) => {
     try {
         const filteredUsers = await User.find({
             _id: { $ne: loggedInUserId },
-        }).select('name avatar');
+        }).select('fullName avatar');
 
         return res
             .status(200)
