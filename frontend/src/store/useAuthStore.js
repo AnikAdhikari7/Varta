@@ -27,11 +27,7 @@ const useAuthStore = create((set) => ({
         } catch (err) {
             set({ authUser: null });
             console.error(`Error checking auth: ${err.message}`);
-            if (
-                err.response &&
-                err.response.data &&
-                err.response.data.message
-            ) {
+            if (err.response?.data?.message) {
                 console.error(`API Error: ${err.response.data.message}`);
             }
         } finally {
@@ -55,11 +51,7 @@ const useAuthStore = create((set) => ({
         } catch (err) {
             toast.error('Error creating account');
             console.error(`Error signing up: ${err.message}`);
-            if (
-                err.response &&
-                err.response.data &&
-                err.response.data.message
-            ) {
+            if (err.response?.data?.message) {
                 console.error(`API Error: ${err.response.data.message}`);
             }
         } finally {
@@ -83,11 +75,7 @@ const useAuthStore = create((set) => ({
         } catch (err) {
             console.error(`Error logging in: ${err.message}`);
             toast.error('Error logging in');
-            if (
-                err.response &&
-                err.response.data &&
-                err.response.data.message
-            ) {
+            if (err.response?.data?.message) {
                 console.error(`API Error: ${err.response.data.message}`);
             }
         } finally {
@@ -110,11 +98,7 @@ const useAuthStore = create((set) => ({
         } catch (err) {
             console.error(`Error logging out: ${err.message}`);
             toast.error('An error occurred');
-            if (
-                err.response &&
-                err.response.data &&
-                err.response.data.message
-            ) {
+            if (err.response?.data?.message) {
                 console.error(`API Error: ${err.response.data.message}`);
             }
         }
@@ -142,11 +126,7 @@ const useAuthStore = create((set) => ({
             } else {
                 toast.error('Error updating avatar');
             }
-            if (
-                err.response &&
-                err.response.data &&
-                err.response.data.message
-            ) {
+            if (err.response?.data?.message) {
                 console.error(`API Error: ${err.response.data.message}`);
             }
         } finally {
