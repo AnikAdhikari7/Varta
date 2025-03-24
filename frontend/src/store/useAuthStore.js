@@ -3,14 +3,17 @@ import { create } from 'zustand';
 
 // internal imports
 import toast from 'react-hot-toast';
+import { io } from 'socket.io-client';
 import axiosInstance from '../utils/axios';
 
-const useAuthStore = create((set) => ({
+const useAuthStore = create((set, get) => ({
     authUser: null,
     isCheckingAuth: true,
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingAvatar: false,
+    onlineUsers: [],
+    socket: null,
 
     // check auth
     checkAuth: async () => {
@@ -48,6 +51,8 @@ const useAuthStore = create((set) => ({
                 set({ authUser: data.data });
                 toast.success('Account created successfully');
             }
+
+            get().connectSocket();
         } catch (err) {
             toast.error('Error creating account');
             console.error(`Error signing up: ${err.message}`);
@@ -71,6 +76,9 @@ const useAuthStore = create((set) => ({
             if (data.statusCode === 200 && data.success) {
                 set({ authUser: data.data });
                 toast.success('Logged in successfully');
+
+                // connect socket
+                get().connectSocket();
             }
         } catch (err) {
             console.error(`Error logging in: ${err.message}`);
@@ -95,6 +103,8 @@ const useAuthStore = create((set) => ({
                 set({ authUser: null });
                 toast.success('Logged out successfully');
             }
+
+            get().disconnectSocket();
         } catch (err) {
             console.error(`Error logging out: ${err.message}`);
             toast.error('An error occurred');
@@ -131,6 +141,35 @@ const useAuthStore = create((set) => ({
             }
         } finally {
             set({ isUpdatingAvatar: false });
+        }
+    },
+
+    // connect socket
+    connectSocket: () => {
+        const { authUser } = get();
+        if (!authUser || get().socket?.connected) {
+            return;
+        }
+
+        const socket = io(import.meta.env.VITE_SOCKET_URL, {
+            query: { userId: authUser._id },
+        });
+        socket.connect();
+        // socket.on('connect', () => {
+        //     console.log('Connected to Socket.IO server', socket.id);
+        // });
+        set({ socket: socket });
+
+        // listen for online users
+        socket.on('onlineUsers', (userIds) => {
+            set({onlineUsers: userIds})
+        });
+    },
+
+    // disconnect socket
+    disconnectSocket: () => {
+        if (get().socket?.connected) {
+            get().socket.disconnect();
         }
     },
 }));

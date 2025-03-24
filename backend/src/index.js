@@ -4,6 +4,7 @@ import { } from 'dotenv/config';
 // internal imports
 import app from './app.js';
 import connectDB from './config/db.js';
+import { server } from './config/socket.js';
 
 const port = process.env.PORT || 8080;
 
@@ -17,7 +18,7 @@ connectDB()
         });
 
         // start server
-        app.listen(port, () => {
+        server.listen(port, () => {
             console.log(`⚙️  Server running on port: ${port}\n`);
         });
     })

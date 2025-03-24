@@ -6,11 +6,12 @@ import morgan from 'morgan';
 import logger from './utils/logger.js';
 
 // internal imports
+import { app } from './config/socket.js';
 import ApiError from './utils/ApiError.js';
 import { API_V, MAX_LIMIT } from './utils/constants.js';
 
 // app initialization
-const app = express();
+// const app = express();
 
 // middlewares
 app.use(
