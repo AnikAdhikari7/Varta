@@ -11,6 +11,8 @@ import { server } from './config/socket.js';
 const port = process.env.PORT || 8080;
 
 const __dirname = path.resolve();
+console.log(__dirname);
+
 
 // connect to database
 connectDB()
@@ -23,11 +25,11 @@ connectDB()
 
         if (process.env.NODE_ENV === 'production') {
             // serve static files
-            app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+            app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
             // handle SPA
             app.get('*', (req, res) => {
-                res.sendFile(path.join(__dirname, '../../frontend', 'dist', 'index.html'));
+                res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
             });
         }
 
