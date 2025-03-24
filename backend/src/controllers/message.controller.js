@@ -1,5 +1,6 @@
 // internal imports
 import cloudinary from '../config/cloudinary.js';
+import { getReceiverSocketId, io } from '../config/socket.js';
 import Message from '../models/message.model.js';
 import User from '../models/user.model.js';
 import ApiError from '../utils/ApiError.js';
@@ -66,7 +67,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
         if (image) {
             // upload base64 image to cloudinary
             const uploadedImage = await cloudinary.uploader.upload(image, {
-                folder: 'chat/images',
+                folder: 'varta/chat/images',
             });
             imageUrl = uploadedImage.secure_url;
         }
@@ -79,6 +80,10 @@ export const sendMessage = asyncHandler(async (req, res) => {
         });
 
         // real time message sending with socket.io
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit('newMessage', newMessage);
+        }
 
         return res
             .status(201)

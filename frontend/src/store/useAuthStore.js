@@ -23,9 +23,9 @@ const useAuthStore = create((set, get) => ({
 
             if (data.statusCode === 200 && data.success) {
                 set({ authUser: data.data });
-            } else {
-                set({ authUser: null });
-                console.error(`Error checking auth: ${data.message}`);
+
+                // connect socket
+                get().connectSocket();
             }
         } catch (err) {
             set({ authUser: null });
