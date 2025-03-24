@@ -6,6 +6,8 @@ import toast from 'react-hot-toast';
 import { io } from 'socket.io-client';
 import axiosInstance from '../utils/axios';
 
+const BASE_URL = import.meta.env.MODE === 'development' ? import.meta.env.VITE_SOCKET_URL : '/';
+
 const useAuthStore = create((set, get) => ({
     authUser: null,
     isCheckingAuth: true,
@@ -151,7 +153,7 @@ const useAuthStore = create((set, get) => ({
             return;
         }
 
-        const socket = io(import.meta.env.VITE_SOCKET_URL, {
+        const socket = io(BASE_URL, {
             query: { userId: authUser._id },
         });
         socket.connect();

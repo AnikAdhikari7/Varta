@@ -1,5 +1,25 @@
 {
+  "name": "varta",
+  "version": "1.0.0",
+  "description": "Varta is a real-time chatting web application",
+  "main": ".eslintrc.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnikAdhikari7/Varta.git"
+  },
+  "keywords": [
+    "varta"
+  ],
+  "author": "Anik Adhikari",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnikAdhikari7/Varta/issues"
+  },
+  "homepage": "https://github.com/AnikAdhikari7/Varta#readme",
   "scripts": {
+    "build": "npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "npm start --prefix backend",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write ."
