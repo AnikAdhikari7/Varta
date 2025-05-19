@@ -1,12 +1,33 @@
 // external imports
-import { LogOut, MessageSquare, Settings, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Github, LogOut, MessageSquare, Settings, User } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 // internal imports
 import useAuthStore from '../store/useAuthStore';
 
 function Navbar() {
     const { logout, authUser } = useAuthStore();
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const toggleSettings = () => {
+        // If already on /settings, go back, otherwise navigate to /settings
+        if (location.pathname.startsWith('/settings')) {
+            navigate(-1);
+        } else {
+            navigate('/settings');
+        }
+    };
+
+    const toggleProfile = () => {
+        // If already on /profile, go back, otherwise navigate to /profile
+        if (location.pathname.startsWith('/profile')) {
+            navigate(-1);
+        } else {
+            navigate('/profile');
+        }
+    };
+
     return (
         <header
             className="bg-base-100 border-b border-base-300 fixed w-full top-0 z-40 
@@ -26,9 +47,24 @@ function Navbar() {
                         </Link>
                     </div>
 
+                    <div className="tooltip tooltip-bottom">
+                        <div className="tooltip-content">
+                            <div className="animate-bounce">
+                                Crafted with ❤️ by Anik
+                            </div>
+                        </div>
+                        <a
+                            href="https://github.com/AnikAdhikari7/Varta"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <Github className="w-6 h-6" />
+                        </a>
+                    </div>
+
                     <div className="flex items-center gap-2">
-                        <Link
-                            to={'/settings'}
+                        <button
+                            onClick={toggleSettings}
                             className={`
               btn btn-sm gap-2 transition-colors
               
@@ -36,19 +72,19 @@ function Navbar() {
                         >
                             <Settings className="w-4 h-4" />
                             <span className="hidden sm:inline">Settings</span>
-                        </Link>
+                        </button>
 
                         {authUser && (
                             <>
-                                <Link
-                                    to={'/profile'}
+                                <button
+                                    onClick={toggleProfile}
                                     className={`btn btn-sm gap-2`}
                                 >
                                     <User className="size-5" />
                                     <span className="hidden sm:inline">
                                         Profile
                                     </span>
-                                </Link>
+                                </button>
 
                                 <button
                                     className="flex gap-2 items-center"
