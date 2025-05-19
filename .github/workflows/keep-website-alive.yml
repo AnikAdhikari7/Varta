@@ -1,16 +1,17 @@
 name: Keep Website Alive
 
 on:
-  schedule:
-    # Run every 5 minutes
-    - cron: '*/5 * * * *'
-  workflow_dispatch:
+    schedule:
+        # Run every 10 minutes
+        - cron: '*/10 * * * *'
+    workflow_dispatch:
 
 jobs:
-  ping:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send HTTP request to keep Render site awake
-        run: |
-          # Use curl to ping the website; -L follows redirects, -m 10 sets a 10 second timeout
-          curl -L -m 10 https://varta-jnsl.onrender.com
+    ping:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Send HTTP request to keep Render site awake
+              run: |
+                  # Use curl to ping the website; -L follows redirects, -m 10 sets a 10 second timeout
+                  # curl -L -m 10 https://varta-jnsl.onrender.com
+                  curl -L https://varta-jnsl.onrender.com
